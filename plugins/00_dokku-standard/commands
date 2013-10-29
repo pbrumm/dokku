@@ -52,12 +52,39 @@ set -e; case "$1" in
     fi
     ;;
 
+  proc_type)
+    APP="$2";
+    if [[ ! -d "/home/git/$APP" ]]; then
+        echo "App $APP does not exist"
+        exit 1
+    fi
+
+    [[ ! -f "/home/git/$APP/PROCTYPE" ]] && echo "web" > "/home/git/$APP/PROCTYPE"
+    if [[ -f "/home/git/$APP/PROCTYPE" ]]; then
+      echo $(< "/home/git/$APP/PROCTYPE")
+    fi
+    ;;
+
+  proc_type:set)
+    APP="$2"; PROCTYPE="$3";
+    if [[ ! -d "/home/git/$APP" ]]; then
+        echo "App $APP does not exist"
+        exit 1
+    fi
+
+    echo $PROCTYPE > "/home/git/$APP/PROCTYPE"
+    echo "Procfile will run $PROCTYPE"
+
+    ;;
+
   help)
     cat && cat<<EOF
     delete <app>                                    Delete an application
     logs <app>                                      Show the last logs for an application
     run <app> <cmd>                                 Run a command in the environment of an application
     url <app>                                       Show the URL for an application
+    proc_type <app>                                 Show the command type to execute from Procfile
+    proc_type:set <app> <type>                      Sets the type of command to run from Procfile
 EOF
     ;;
 
