@@ -3,7 +3,9 @@ set -e
 APP="$1"; PORT="$2"
 WILDCARD_SSL="$HOME/ssl"
 SSL="$HOME/$APP/ssl"
-
+if [[ -f "$HOME/$APP/ENV" ]]; then
+  source "$HOME/$APP/ENV"
+fi
 if [[ -f "$HOME/VHOST" ]]; then
   VHOST=$(< "$HOME/VHOST")
   SUBDOMAIN=${APP/%\.${VHOST}/}
@@ -25,13 +27,13 @@ if [[ -f "$HOME/VHOST" ]]; then
 upstream $APP { server 127.0.0.1:$PORT; }
 server {
   listen      80;
-  server_name $hostname;
+  server_name $hostname $SERVER_NAME;
   return 301 https://\$host\$request_uri;
 }
 
 server {
   listen      443;
-  server_name $hostname;
+  server_name $hostname $SERVER_NAME;
 
   ssl on;
   ssl_certificate     $SSL_INUSE/server.crt;
@@ -61,7 +63,7 @@ else
 upstream $APP { server 127.0.0.1:$PORT; }
 server {
   listen      80;
-  server_name $hostname;
+  server_name $hostname $SERVER_NAME;
   location    / {
     proxy_pass  http://$APP;
     proxy_http_version 1.1;
