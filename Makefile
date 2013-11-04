@@ -1,7 +1,7 @@
 GITRECEIVE_URL ?= https://raw.github.com/progrium/gitreceive/master/gitreceive
 SSHCOMMAND_URL ?= https://raw.github.com/progrium/sshcommand/master/sshcommand
 PLUGINHOOK_URL ?= https://s3.amazonaws.com/progrium-pluginhook/pluginhook_0.1.0_amd64.deb
-STACK_URL ?= github.com/progrium/buildstep
+STACK_URL ?= github.com/pbrumm/buildstep
 PREBUILT_STACK_URL ?= https://s3.amazonaws.com/progrium-dokku/progrium_buildstep_c30652f59a.tgz
 
 all:

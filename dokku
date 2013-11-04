@@ -73,6 +73,7 @@ case "$1" in
     pluginhook post-deploy $APP $port
 
     if [[ -n $oldid ]]; then
+      sleep 15
       docker kill $oldid > /dev/null
     fi
     ;;
