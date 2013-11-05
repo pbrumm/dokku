@@ -11,6 +11,9 @@ case "$1" in
     echo "-----> Releasing $APP ..."
     dokku release $APP $IMAGE
     echo "-----> Release complete!"
+    echo "-----> Migrating $APP ..."
+    dokku migrate $APP $IMAGE
+    echo "-----> Migration complete!"
     echo "-----> Deploying $APP ..."
     dokku deploy $APP $IMAGE
     echo "-----> Deploy complete!"
@@ -44,6 +47,14 @@ case "$1" in
       docker commit $id $IMAGE > /dev/null
     fi
     pluginhook post-release $APP $IMAGE
+    ;;
+
+  migrate)
+    APP="$2"; IMAGE="$3"
+    pluginhook pre-migrate $APP $IMAGE
+    PROCTYPE=$(cat "$HOME/$APP/PROCTYPE")
+    id=$(docker run -d -p 5000 -e PORT=5000 $IMAGE /bin/bash -c "/start migrate")
+    test $(docker wait $id) -eq 0
     ;;
 
   deploy)

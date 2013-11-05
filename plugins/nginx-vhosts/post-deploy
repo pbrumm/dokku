@@ -8,6 +8,7 @@ if [[ -f "$HOME/$APP/ENV" ]]; then
 fi
 # duplicated to avoid getting overwritten by env
 APP="$1"; PORT="$2"
+NGINX_HTTP_PORT=${NGINX_HTTP_PORT-80};
 if [[ -f "$HOME/VHOST" ]]; then
   VHOST=$(< "$HOME/VHOST")
   SUBDOMAIN=${APP/%\.${VHOST}/}
@@ -28,7 +29,7 @@ if [[ -f "$HOME/VHOST" ]]; then
   cat<<EOF > $HOME/$APP/nginx.conf
 upstream $APP { server 127.0.0.1:$PORT; }
 server {
-  listen      80;
+  listen      $NGINX_HTTP_PORT;
   server_name $hostname $SERVER_NAME;
   return 301 https://\$host\$request_uri;
 }
