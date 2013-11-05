@@ -1,11 +1,13 @@
 #!/bin/bash
 set -e
-APP="$1"; PORT="$2"
+APP="$1";
 WILDCARD_SSL="$HOME/ssl"
 SSL="$HOME/$APP/ssl"
 if [[ -f "$HOME/$APP/ENV" ]]; then
   source "$HOME/$APP/ENV"
 fi
+# duplicated to avoid getting overwritten by env
+APP="$1"; PORT="$2"
 if [[ -f "$HOME/VHOST" ]]; then
   VHOST=$(< "$HOME/VHOST")
   SUBDOMAIN=${APP/%\.${VHOST}/}
