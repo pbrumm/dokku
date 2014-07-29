@@ -53,7 +53,7 @@ case "$1" in
         echo "Please specify an app to run the command on"
         exit 1
     fi
-    APP="$2"; IMAGE="dokku/$APP"
+    APP="$2"; IMAGE="dokku/$APP"; CACHE_DIR="$DOKKU_ROOT/$APP/cache"
     if [[ ! -d "$DOKKU_ROOT/$APP" ]]; then
         echo "App $APP does not exist"
         exit 1
@@ -61,7 +61,7 @@ case "$1" in
     shift 2
 
     DOCKER_ARGS=$(: | pluginhook docker-args $APP)
-    docker run -i -t $DOCKER_ARGS $IMAGE /exec "$@"
+    docker run -i -t $DOCKER_ARGS -v $CACHE_DIR:/cache $IMAGE /exec "$@"
     ;;
 
   url)
