@@ -24,6 +24,8 @@ case "$1" in
     echo "-----> Migrating $APP ..."
     dokku migrate $APP
     echo "-----> Deploying $APP ..."
+    dokku tasks $APP
+    echo "-----> Running Tasks $APP ..."
     dokku deploy $APP
     echo "=====> Application deployed:"
     echo "       $(dokku url $APP)"
@@ -60,6 +62,22 @@ case "$1" in
     pluginhook pre-migrate $APP $IMAGE
     id=$(docker run -d -p 5000 -e PORT=5000 $IMAGE /bin/bash -c "/start migrate")
     test $(docker wait $id) -eq 0
+    ;;
+  tasks)
+    APP="$2"; IMAGE="dokku/$APP"; CACHE_DIR="$DOKKU_ROOT/$APP/cache"; TASKS="$DOKKU_ROOT/$APP/TASKS"
+    pluginhook pre-migrate $APP $IMAGE
+    if [[  -f "$HOME/$APP/PROCTYPE" ]]; then
+      while read task; do
+        if [[ -z "$task" ]]; then 
+          echo "Running $task"
+          DOCKER_ARGS=$(: | pluginhook docker-args $APP)
+          id=$(docker run -d -v $DOCKER_ARGS $CACHE_DIR:/cache -p 5000 -e PORT=5000 $IMAGE /bin/bash -c "/exec '$task'")
+          test $(docker wait $id) -eq 0
+        fi
+      done <$TASKS
+
+      
+    fi
     ;;
   deploy)
     APP="$2"; IMAGE="dokku/$APP"; CACHE_DIR="$DOKKU_ROOT/$APP/cache"
