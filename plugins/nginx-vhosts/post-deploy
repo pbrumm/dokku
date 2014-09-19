@@ -30,6 +30,10 @@ EOF
     SSL_DIRECTIVES=""
   fi
 
+  C=""
+  if [[ $NGINX_REPROXY ]]; then
+    C="#"
+  fi
   # ssl based nginx.conf
   if [[ -n "$SSL_INUSE" ]]; then
   cat<<EOF > $DOKKU_ROOT/$APP/nginx.conf
@@ -56,10 +60,10 @@ $SSL_DIRECTIVES
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection "upgrade";
     proxy_set_header Host \$http_host;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_set_header X-Forwarded-For \$remote_addr;
-    proxy_set_header X-Forwarded-Port \$server_port;
-    proxy_set_header X-Request-Start \$msec;
+$C    proxy_set_header X-Forwarded-Proto \$scheme;
+$C    proxy_set_header X-Forwarded-For \$remote_addr;
+$C    proxy_set_header X-Forwarded-Port \$server_port;
+$C    proxy_set_header X-Request-Start \$msec;
   }
 }
 EOF
@@ -79,10 +83,10 @@ server {
     proxy_set_header Upgrade \$http_upgrade;
     proxy_set_header Connection "upgrade";
     proxy_set_header Host \$http_host;
-    proxy_set_header X-Forwarded-Proto \$scheme;
-    proxy_set_header X-Forwarded-For \$remote_addr;
-    proxy_set_header X-Forwarded-Port \$server_port;
-    proxy_set_header X-Request-Start \$msec;
+$C    proxy_set_header X-Forwarded-Proto \$scheme;
+$C    proxy_set_header X-Forwarded-For \$remote_addr;
+$C    proxy_set_header X-Forwarded-Port \$server_port;
+$C    proxy_set_header X-Request-Start \$msec;
   }
 }
 EOF
