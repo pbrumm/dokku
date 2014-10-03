@@ -110,8 +110,8 @@ case "$1" in
         docker inspect $oldid &> /dev/null && docker kill $oldid > /dev/null
       fi
       pluginhook post-deploy $APP $port
-      ;;
     fi
+    ;;
 
   cleanup)
     # delete all non-running container
