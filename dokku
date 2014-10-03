@@ -107,7 +107,10 @@ case "$1" in
     if [ $successful -eq 1 ]; then
       # kill the app when running
       if [[ -n $oldid ]]; then
-        docker inspect $oldid &> /dev/null && docker kill $oldid > /dev/null
+        (
+          sleep 40
+          docker inspect $oldid &> /dev/null && docker kill $oldid > /dev/null
+        )
       fi
       pluginhook post-deploy $APP $port
     fi
