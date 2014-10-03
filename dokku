@@ -104,7 +104,7 @@ case "$1" in
       printf "."
       sleep 1
     done
-    if [ $successful -eq 1]; then
+    if [ $successful -eq 1 ]; then
       # kill the app when running
       if [[ -n $oldid ]]; then
         docker inspect $oldid &> /dev/null && docker kill $oldid > /dev/null
