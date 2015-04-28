@@ -65,6 +65,8 @@ case "$1" in
   deploy)
     APP="$2"; IMAGE="dokku/$APP"
     pluginhook pre-deploy $APP
+    [[ ! -f "$HOME/$APP/PROCTYPE" ]] && echo "web" > "$HOME/$APP/PROCTYPE"
+    PROCTYPE=$(cat "$HOME/$APP/PROCTYPE")
 
     if [[ -f "$DOKKU_ROOT/$APP/CONTAINER" ]]; then
       oldid=$(< "$DOKKU_ROOT/$APP/CONTAINER")
@@ -76,7 +78,7 @@ case "$1" in
     BIND_EXTERNAL=$(pluginhook bind-external-ip $APP)
 
     is_image_buildstep_based "$IMAGE" && DOKKU_BUILDSTEP=true
-    [[ -n "$DOKKU_BUILDSTEP" ]] && START_CMD="/start web"
+    [[ -n "$DOKKU_BUILDSTEP" ]] && START_CMD="/start $PROCTYPE"
     [[ -z "$DOKKU_BUILDSTEP" ]] && DOKKU_DOCKERFILE_PORT=$(dokku config:get $APP DOKKU_DOCKERFILE_PORT || true)
 
     if [[ "$BIND_EXTERNAL" = "false" ]];then
